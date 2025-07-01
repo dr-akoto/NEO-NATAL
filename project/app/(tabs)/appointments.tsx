@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Calendar, Clock, MapPin, Video, Phone, Plus, User } from 'lucide-react-native';
@@ -16,7 +17,8 @@ interface Appointment {
 
 export default function AppointmentsScreen() {
   const [selectedTab, setSelectedTab] = useState<'upcoming' | 'completed'>('upcoming');
-  
+  const navigation = useNavigation<any>();
+
   const appointments: Appointment[] = [
     {
       id: '1',
@@ -74,6 +76,7 @@ export default function AppointmentsScreen() {
   };
 
   const getTypeLabel = (type: string) => {
+    
     switch (type) {
       case 'video':
         return 'Video Call';
@@ -82,6 +85,12 @@ export default function AppointmentsScreen() {
       default:
         return 'In-Person';
     }
+  };
+  const goToNewAppointment = () => {
+  navigation.navigate('new-appointment'); // must be registered in navigator
+};
+  const goToAppointmentDetails = (appointmentId: string) => {
+    navigation.navigate('appointment-details', { appointmentId });
   };
 
   const renderAppointment = (appointment: Appointment) => (
@@ -184,7 +193,7 @@ export default function AppointmentsScreen() {
               <Text style={styles.emptyStateText}>
                 Book your next appointment to stay on track with your pregnancy care
               </Text>
-              <TouchableOpacity style={styles.bookButton}>
+              <TouchableOpacity style={styles.bookButton} onPress={goToNewAppointment}>
                 <Text style={styles.bookButtonText}>Book Appointment</Text>
               </TouchableOpacity>
             </View>
@@ -196,7 +205,7 @@ export default function AppointmentsScreen() {
       </ScrollView>
 
       {/* Quick Book Button */}
-      <TouchableOpacity style={styles.floatingButton}>
+      <TouchableOpacity style={styles.floatingButton} onPress={goToNewAppointment}>
         <LinearGradient
           colors={['#3B82F6', '#1D4ED8']}
           style={styles.floatingButtonGradient}
